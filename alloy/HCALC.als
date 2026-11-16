@@ -106,48 +106,55 @@ assert A7_production_defined_records {
   A7_production_defined_records_present
 }
 
+/* ---- Expectation annotations ----
+ * Every check carries `expect 0` (UNSAT: no counterexample in scope) and every run `expect 1` (SAT: an
+ * instance exists). check.sh runs each command sequentially and fails on any mismatch.
+ * Convention adapted from github.com/SNAPKITTYWEST/tlm-jxcl-forge alloy/invariants/{check.sh,*.als}
+ * @ commit 48891c426c4b4d61034ec1329b912e083ee7f6d8 (same owner).
+ */
+
 /* ---- Sealed check commands (finite scopes) for PROPERTY_MAP / Verify ----
  * Int bitwidth 8 so literals 63/64 are representable. Avoid heavy Int arith.
  */
 
 /* A1–A6 sealed (keep working facts → UNSAT) */
-check A1_P64_cardinality_and_distinct for 5 but exactly 1 P64Carrier, 8 PrimeLabel, 8 Int
+check A1_P64_cardinality_and_distinct for 5 but exactly 1 P64Carrier, 8 PrimeLabel, 8 Int expect 0
 
 assert A1b_P64_distinct_indices {
   all disj p1, p2: P64Carrier.primes | p1.idx != p2.idx
 }
-check A1b_P64_distinct_indices for 5 but exactly 1 P64Carrier, 8 PrimeLabel, 8 Int
+check A1b_P64_distinct_indices for 5 but exactly 1 P64Carrier, 8 PrimeLabel, 8 Int expect 0
 
-check A2_contractive_iff_gershgorin_bound for 5 but 8 Int
-check A3_soft_project_when_q_over_margin for 5 but 8 Int
-check A4_foundry_additive_only_if_Foundry_instance for 5 but exactly 1 ActiveInstance, 8 Int
-check A5_PMAT_conservation_gated for 5 but 8 Int
-check A6_guardian_reject_spectral_or_nonfinite for 5 but 8 Int
+check A2_contractive_iff_gershgorin_bound for 5 but 8 Int expect 0
+check A3_soft_project_when_q_over_margin for 5 but 8 Int expect 0
+check A4_foundry_additive_only_if_Foundry_instance for 5 but exactly 1 ActiveInstance, 8 Int expect 0
+check A5_PMAT_conservation_gated for 5 but 8 Int expect 0
+check A6_guardian_reject_spectral_or_nonfinite for 5 but 8 Int expect 0
 
 /* A7 production SpecDefined */
-check A7_production_defined_records for 5 but 8 Int
+check A7_production_defined_records for 5 but 8 Int expect 0
 
 /* Production P1–P8 */
-check P1_carrier_linf_dim for 5 but 8 Int
-check P2_tp_diag_spec_alpha for 5 but 8 Int
-check P3_c_scale_or_id for 5 but 8 Int
-check P4_lambda_m_scalar_bound for 5 but exactly 1 LambdaM, 8 Int
-check P5_xi_uniform_affine for 5 but 8 Int
-check P6_instance_bridge_morphism for 5 but 8 Int
-check P7_optobj_residual for 5 but 8 Int
-check P8_contractalg_gershgorin_then_c for 5 but 8 Int
+check P1_carrier_linf_dim for 5 but 8 Int expect 0
+check P2_tp_diag_spec_alpha for 5 but 8 Int expect 0
+check P3_c_scale_or_id for 5 but 8 Int expect 0
+check P4_lambda_m_scalar_bound for 5 but exactly 1 LambdaM, 8 Int expect 0
+check P5_xi_uniform_affine for 5 but 8 Int expect 0
+check P6_instance_bridge_morphism for 5 but 8 Int expect 0
+check P7_optobj_residual for 5 but 8 Int expect 0
+check P8_contractalg_gershgorin_then_c for 5 but 8 Int expect 0
 
 /* Safety / pipeline asserts (production-updated INV_*) */
-check INV_LambdaM_scalar_placeholder for 5 but exactly 1 LambdaM, 8 Int
-check INV_step_shape_bridge_instance for 5 but 8 Int
-check INV_prime_index_bounded_to_P64 for 5 but exactly 1 P64Carrier, 8 PrimeLabel, 8 Int
-check INV_recursion_uses_prime_index for 5 but 8 PrimeLabel, 8 Int
-check INV_contract_measure_non_increase for 5 but 8 Int
-check INV_optimize_objective_residual for 5 but 8 Int
-check INV_converge_hyps_production for 5 but 8 Int
-check INV_evolution_total_on_State for 5 but 5 Time, 5 State, 8 Int
-check INV_multimodal_tensor_wiring for 5 but 8 Int
-check INV_evolve_total_State_reachable for 5 but 5 Time, 5 State, 8 Int
+check INV_LambdaM_scalar_placeholder for 5 but exactly 1 LambdaM, 8 Int expect 0
+check INV_step_shape_bridge_instance for 5 but 8 Int expect 0
+check INV_prime_index_bounded_to_P64 for 5 but exactly 1 P64Carrier, 8 PrimeLabel, 8 Int expect 0
+check INV_recursion_uses_prime_index for 5 but 8 PrimeLabel, 8 Int expect 0
+check INV_contract_measure_non_increase for 5 but 8 Int expect 0
+check INV_optimize_objective_residual for 5 but 8 Int expect 0
+check INV_converge_hyps_production for 5 but 8 Int expect 0
+check INV_evolution_total_on_State for 5 but 5 Time, 5 State, 8 Int expect 0
+check INV_multimodal_tensor_wiring for 5 but 8 Int expect 0
+check INV_evolve_total_State_reachable for 5 but 5 Time, 5 State, 8 Int expect 0
 
 /* Optional runs: exhibit finite traces per instance (exploration, not theorems). */
 pred show_hcalc_trace {
@@ -155,11 +162,44 @@ pred show_hcalc_trace {
   some t: Time | some t.next and hcalc_nested_step[t, t.at, t.next.at]
 }
 run show_hcalc_trace for 4 but exactly 1 ActiveInstance, exactly 1 HCALCInstance,
-  3 Time, 3 State, 2 TpMap, 1 HCALC_Xi, 1 COp, 1 Intermediate, 8 Int
+  3 Time, 3 State, 2 TpMap, 1 HCALC_Xi, 1 COp, 1 Intermediate, 8 Int expect 1
 
 pred show_foundry_trace {
   ActiveInstance.kind = FoundryInstance
   some t: Time | some t.next and foundry_additive_step[t.at, t.next.at]
 }
 run show_foundry_trace for 4 but exactly 1 ActiveInstance, exactly 1 FoundryInstance,
-  3 Time, 3 State, 8 Int
+  3 Time, 3 State, 8 Int expect 1
+
+/* ---- Vacuity guards (one per module) ----
+ * Each run asks for an instance of the FULL composed model (all module facts) in which that module's
+ * own signatures are inhabited and its key relations are non-empty. SAT (expect 1) shows the facts the
+ * UNSAT checks rely on are satisfiable non-trivially; an UNSAT here would mean the corresponding checks
+ * pass vacuously. Pattern: tlm-jxcl-forge alloy/invariants "NonVacuous" runs @ 48891c4.
+ */
+pred vacuity_State { some State and some t: Time | some t.next and some StateMeasure }
+run vacuity_State for 5 but 3 Time, 3 State, 8 Int expect 1
+
+pred vacuity_PrimeIndex { #P64Carrier.primes >= 2 }
+run vacuity_PrimeIndex for 5 but exactly 1 P64Carrier, 8 PrimeLabel, 8 Int expect 1
+
+pred vacuity_Transform { some TpMap and some MultimodalInput and some TensorSpace }
+run vacuity_Transform for 5 but 8 Int expect 1
+
+pred vacuity_Recursion { some t: Time, tp: TpMap | some t.next and recurse_via_Tp[t, tp, t.next.at] }
+run vacuity_Recursion for 5 but 3 Time, 3 State, 8 PrimeLabel, 8 Int expect 1
+
+pred vacuity_Stabilize { some Scalar and some ScheduleVector and some Stabilized }
+run vacuity_Stabilize for 5 but exactly 1 LambdaM, 8 Int expect 1
+
+pred vacuity_Contract { some Jacobian and some SpectralBound and some QBudget and some SoftProject and some COp }
+run vacuity_Contract for 5 but 8 Int expect 1
+
+pred vacuity_Evolve { some Kick and some Intermediate and some HCALC_Xi and some FoundryT and some FoundryG }
+run vacuity_Evolve for 5 but 8 Int expect 1
+
+pred vacuity_Optimize { some Objective }
+run vacuity_Optimize for 5 but 8 Int expect 1
+
+pred vacuity_Converge { some Residual and some ConvergenceHyp and some GuardianCheck }
+run vacuity_Converge for 5 but 8 Int expect 1
